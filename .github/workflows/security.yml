@@ -1,0 +1,32 @@
+# Example GitHub Actions workflow for Fraim Security Scan
+# Copy this file to .github/workflows/security.yml in your repository
+
+name: Security Scan with Fraim
+
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  security-scan:
+    name: Fraim Security Analysis
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
+      pull-requests: write
+    
+    steps:
+      - name: Run Fraim Security Scan
+        id: fraim-scan
+        uses: fraim-dev/fraim-action@a2df8041a911085d67158ed0c3d87b8cc2f414f6
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          model: 'openai/gpt-5'
+          workflow: 'code'
+          workflow_args: |
+            {
+              "temperature": "1"
+            }
