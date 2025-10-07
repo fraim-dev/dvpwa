@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: Run Fraim Security Scan
         id: fraim-scan
-        uses: fraim-dev/fraim-action@a15e85774620304b41e44c325c1afc70fad5fac1
+        uses: fraim-dev/fraim-action@224508814e71121543a8e7c0c022e23e9c2a0237
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           model: 'openai/gpt-5'
