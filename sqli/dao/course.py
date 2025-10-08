@@ -46,3 +46,20 @@ class Course(NamedTuple):
         async with conn.cursor() as cur:
             await cur.execute(q, {'title': title,
                                   'description': description})
+    
+    @staticmethod
+    async def get_with_metadata(conn: Connection, id_: int):
+        """Get course with additional metadata"""
+        async with conn.cursor() as cur:
+            await cur.execute(
+                'SELECT id, title, description, '
+                'CASE WHEN description IS NULL THEN \'<em>No description available</em>\' '
+                'ELSE description END as display_description '
+                'FROM courses WHERE id = %s',
+                (id_,),
+            )
+            result = await cur.fetchone()
+            if result:
+                # Return a modified course object with the processed description
+                return Course(result[0], result[1], result[3])  # Use display_description
+            return None
