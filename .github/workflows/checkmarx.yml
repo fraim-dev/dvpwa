@@ -1,0 +1,38 @@
+name: Checkmarx Security Scan
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+  schedule:
+    # Run weekly on Sundays at 3 AM UTC
+    - cron: '0 3 * * 0'
+
+jobs:
+  checkmarx-scan:
+    name: Run Checkmarx SAST scan
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      security-events: write
+      pull-requests: write
+      issues: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better analysis
+
+      - name: Vorpal with reviewdog
+        if: ${{ steps.changed-files.outputs.all_changed_files != '' }}
+        uses: checkmarx/vorpal-reviewdog-github-action@v1.0.0
+        with:
+          source_path: "${{ steps.changed-files.outputs.all_changed_files }}"
+          filter_mode: file
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+          level: error
+          fail_on_error: false
