@@ -13,9 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       actions: read
-      contents: write
+      contents: read
       security-events: write
       issues: write
+      pull-requests: write
 
     strategy:
       fail-fast: false
@@ -31,6 +32,7 @@ jobs:
       with:
         languages: ${{ matrix.language }}
         queries: security-and-quality
+        upload: ${{ github.event_name != 'pull_request' }}
 
     - name: Setup Python
       if: matrix.language == 'python'
@@ -51,6 +53,7 @@ jobs:
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{matrix.language}}"
+        upload: ${{ github.event_name != 'pull_request' }}
 
     - name: Comment PR with CodeQL results
       if: github.event_name == 'pull_request'
