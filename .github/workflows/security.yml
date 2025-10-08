@@ -17,11 +17,12 @@ jobs:
       actions: read
       security-events: write
       pull-requests: write
+      issues: write
     
     steps:
       - name: Run Fraim Security Scan
         id: fraim-scan
-        uses: fraim-dev/fraim-action@db509a4c02c89914b06da36d1cb517c13ffb45a6
+        uses: fraim-dev/fraim-action@f8c4f6b2a7146862706ebc8bffe41e4ac1f50c55
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           model: 'openai/gpt-5'
