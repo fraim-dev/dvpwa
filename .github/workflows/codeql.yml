@@ -53,12 +53,6 @@ jobs:
       with:
         category: "/language:${{matrix.language}}"
 
-    - name: Upload CodeQL results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v2
-      if: always()
-      with:
-        sarif_file: ../results/python.sarif
-
     - name: Comment PR with CodeQL results
       if: github.event_name == 'pull_request'
       uses: actions/github-script@v6

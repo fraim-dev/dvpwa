@@ -64,13 +64,6 @@ jobs:
           generateGitlabSAST: "1"
           generateGitlabSecrets: "1"
 
-      # Upload Semgrep SARIF results
-      - name: Upload Semgrep SARIF results
-        uses: github/codeql-action/upload-sarif@v2
-        if: always()
-        with:
-          sarif_file: semgrep.sarif
-
       # Generate comprehensive security report
       - name: Generate Security Report
         if: always()
@@ -140,15 +133,3 @@ jobs:
             } catch (error) {
               console.log('Could not read security report:', error);
             }
-
-      # Upload security report as artifact
-      - name: Upload Security Report
-        uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: security-report
-          path: |
-            security-report.md
-            bandit-report.json
-            safety-report.json
-            semgrep.sarif
