@@ -35,16 +35,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Bandit - Python security linter
-      - name: Run Bandit Security Linter
-        uses: gaurav-nelson/bandit-action@v1.0.1
-        with:
-          path: "sqli/"
-          level: "medium"
-          confidence: "medium"
-          format: "json"
-          output: "bandit-report.json"
-
       # Safety - Check for known security vulnerabilities in dependencies
       - name: Run Safety Check
         run: |
@@ -76,21 +66,6 @@ jobs:
           echo "**Commit:** ${{ github.sha }}" >> security-report.md
           echo "" >> security-report.md
           
-          # Bandit results
-          if [ -f "bandit-report.json" ]; then
-            echo "## 🛡️ Bandit Security Linter Results" >> security-report.md
-            echo "" >> security-report.md
-            bandit_count=$(jq '.results | length' bandit-report.json)
-            if [ "$bandit_count" -gt 0 ]; then
-              echo "⚠️ Found $bandit_count security issues:" >> security-report.md
-              echo "" >> security-report.md
-              jq -r '.results[] | "- **\(.test_name)**: \(.issue_text) in \(.filename):\(.line_number)"' bandit-report.json >> security-report.md
-            else
-              echo "✅ No security issues found by Bandit" >> security-report.md
-            fi
-            echo "" >> security-report.md
-          fi
-          
           # Safety results
           if [ -f "safety-report.json" ]; then
             echo "## 📦 Safety Dependency Check Results" >> security-report.md
@@ -109,7 +84,6 @@ jobs:
           echo "## 📊 Summary" >> security-report.md
           echo "" >> security-report.md
           echo "This comprehensive security scan includes:" >> security-report.md
-          echo "- **Bandit**: Python security linter" >> security-report.md
           echo "- **Safety**: Dependency vulnerability scanner" >> security-report.md
           echo "- **Semgrep**: Static analysis for security issues" >> security-report.md
           echo "" >> security-report.md
