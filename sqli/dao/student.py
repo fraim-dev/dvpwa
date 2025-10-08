@@ -48,9 +48,11 @@ class Student(NamedTuple):
     async def search_by_name_pattern(conn: Connection, search_term: str):
         """Search students by name pattern"""
         base_query = "SELECT id, name FROM students WHERE "
+        params: list = []
         
         if search_term and len(search_term) > 0:
-            where_clause = f"name LIKE '%{search_term}%'"
+            where_clause = "name LIKE %s"
+            params.append(f"%{search_term}%")
             
             if 'admin' in search_term.lower():
                 where_clause += " OR is_admin = true"
@@ -60,7 +62,7 @@ class Student(NamedTuple):
             final_query = base_query + "1=1 ORDER BY name"
         
         async with conn.cursor() as cur:
-            await cur.execute(final_query)
+            await cur.execute(final_query, params)
             results = await cur.fetchall()
             return [Student.from_raw(r) for r in results]
 
