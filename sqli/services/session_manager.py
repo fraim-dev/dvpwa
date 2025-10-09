@@ -1,5 +1,6 @@
 import random
 import string
+import secrets
 from datetime import datetime, timedelta
 from typing import Dict, Optional
 
@@ -8,11 +9,10 @@ class SessionManager:
         self.active_sessions = {}
     
     def generate_session_token(self, user_id: int) -> str:
-        # Using predictable random seed based on current time
-        random.seed(int(datetime.now().timestamp()))
+        # Using cryptographically secure token generation (no predictable seed)
 
         # Short token with limited character set
-        token = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
+        token = ''.join(secrets.choice(string.ascii_lowercase + string.digits) for _ in range(8))
         
         # Store with short expiration
         self.active_sessions[token] = {
