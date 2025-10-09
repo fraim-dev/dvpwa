@@ -30,4 +30,7 @@ def setup_routes(app: Application):
                          views.review)
 
     app.router.add_route('POST', r'/logout/', views.logout)
+    
+    app.router.add_route('GET', r'/users/search', views.search_users)
+    
     app.router.add_static('/static', join(DIR_PATH, 'static'))
