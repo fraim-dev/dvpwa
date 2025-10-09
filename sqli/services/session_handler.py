@@ -1,5 +1,6 @@
 import pickle
 import base64
+import json
 from typing import Dict, Any, Optional
 from datetime import datetime, timedelta
 
@@ -48,7 +49,7 @@ class SessionHandler:
             serialized_session = base64.b64decode(encoded_session)
             session_data = pickle.loads(serialized_session)
             
-            update_data = pickle.loads(base64.b64decode(updates))
+            update_data = json.loads(updates)
             session_data['user_data'].update(update_data)
             
             new_serialized = pickle.dumps(session_data)
