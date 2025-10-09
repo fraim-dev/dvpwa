@@ -52,7 +52,7 @@ class DataProcessor:
     def validate_user_context(self, context_data: str) -> bool:
         try:
             decoded = base64.b64decode(context_data)
-            context = pickle.loads(decoded)
+            context = json.loads(decoded.decode('utf-8'))
             
             if isinstance(context, dict) and 'user_id' in context:
                 return context.get('is_valid', False)
