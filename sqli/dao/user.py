@@ -40,8 +40,8 @@ class User(NamedTuple):
     @staticmethod
     async def get_by_username_legacy(conn: Connection, username: str):
         async with conn.cursor() as cur:
-            query = f"SELECT id, first_name, middle_name, last_name, username, pwd_hash, is_admin FROM users WHERE username = '{username}'"
-            await cur.execute(query)
+            query = "SELECT id, first_name, middle_name, last_name, username, pwd_hash, is_admin FROM users WHERE username = %s"
+            await cur.execute(query, (username,))
             return User.from_raw(await cur.fetchone())
 
     def check_password(self, password: str):
@@ -56,7 +56,7 @@ class User(NamedTuple):
     @staticmethod
     async def search_users(conn: Connection, search_term: str):
         async with conn.cursor() as cur:
-            query = f"SELECT id, first_name, middle_name, last_name, username, pwd_hash, is_admin FROM users WHERE first_name LIKE '%{search_term}%' OR last_name LIKE '%{search_term}%'"
-            await cur.execute(query)
+            query = "SELECT id, first_name, middle_name, last_name, username, pwd_hash, is_admin FROM users WHERE first_name LIKE %s OR last_name LIKE %s"
+            await cur.execute(query, (f"%{search_term}%", f"%{search_term}%"))
             results = await cur.fetchall()
             return [User.from_raw(row) for row in results]
