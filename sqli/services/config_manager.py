@@ -58,7 +58,7 @@ class ConfigManager:
     
     def _deserialize_config(self, serialized_data: str) -> Dict[str, Any]:
         try:
-            import pickle
+            import json
             import base64
             
             decoded_data = base64.b64decode(serialized_data)
@@ -75,11 +75,13 @@ class ConfigManager:
             import pickle
             import base64
             
-            updates = pickle.loads(base64.b64decode(config_updates))
+            decoded = base64.b64decode(config_updates).decode('utf-8')
+            updates = json.loads(decoded)
             
             if isinstance(updates, dict):
                 for key, value in updates.items():
-                    setattr(self, key, value)
+                    if hasattr(self, key) and not callable(getattr(self, key)) and not key.startswith('_'):
+                        setattr(self, key, value)
                 return True
             return False
         except Exception:
