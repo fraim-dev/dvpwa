@@ -1,0 +1,66 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Student Search{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Student Search</h2>
+    
+    <form method="GET" action="/students/search">
+        <div class="input-field">
+            <input type="text" name="q" id="search" value="{{ search_term }}" placeholder="Search students by name...">
+            <label for="search">Search Term</label>
+        </div>
+        <button class="btn waves-effect waves-light" type="submit">
+            Search
+            <i class="material-icons right">search</i>
+        </button>
+    </form>
+    
+    {% if search_term %}
+        <h4>Search Results for "{{ search_term }}"</h4>
+        {% if students %}
+            <table class="striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student.id }}</td>
+                        <td>{{ student.name }}</td>
+                        <td>
+                            <a href="/students/{{ student.id }}" class="btn-small waves-effect waves-light">
+                                View Details
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No students found matching "{{ search_term }}"</p>
+        {% endif %}
+    {% endif %}
+    
+    <div class="section">
+        <h5>Advanced Search Examples</h5>
+        <p>Try these search patterns:</p>
+        <ul class="collection">
+            <li class="collection-item">
+                <strong>Basic search:</strong> <code>Chuck</code>
+            </li>
+            <li class="collection-item">
+                <strong>Pattern matching:</strong> <code>%</code>
+            </li>
+            <li class="collection-item">
+                <strong>Complex queries:</strong> <code>' OR '1'='1</code>
+            </li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
