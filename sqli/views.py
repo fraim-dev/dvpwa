@@ -80,6 +80,17 @@ async def student(request: Request):
     return {'student': student, 'results': results}
 
 
+@template('student_search.jinja2')
+async def student_search(request: Request):
+    app: Application = request.app
+    search_term = request.query.get('q', '')
+    
+    async with app['db'].acquire() as conn:
+        students = await Student.search_by_name_pattern(conn, search_term)
+    
+    return {'students': students, 'search_term': search_term}
+
+
 @template('courses.jinja2')
 async def courses(request: Request):
     app: Application = request.app
