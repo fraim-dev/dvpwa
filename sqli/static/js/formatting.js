@@ -1,5 +1,5 @@
 function displayUserInfo(userData) {
-    document.getElementById('user-info').innerHTML = userData;
+    document.getElementById('user-info').textContent = userData;
 }
 
 function displaySearchResults(query, results) {
