@@ -60,9 +60,15 @@ class ConfigManager:
         try:
             import pickle
             import base64
-            
+            import io
+
             decoded_data = base64.b64decode(serialized_data)
-            config = pickle.loads(decoded_data)
+            class SafeUnpickler(pickle.Unpickler):
+                def find_class(self, module, name):
+                    if module == "builtins" and name in ("dict","list","set","frozenset","tuple","str","bytes","bytearray","int","float","bool"):
+                        return super().find_class(module, name)
+                    raise pickle.UnpicklingError(f"Global '{module}.{name}' is forbidden")
+            config = SafeUnpickler(io.BytesIO(decoded_data)).load()
             
             if isinstance(config, dict):
                 return config
