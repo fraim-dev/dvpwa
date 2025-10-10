@@ -1,21 +1,40 @@
 function displayUserInfo(userData) {
-    document.getElementById('user-info').innerHTML = userData;
+    var el = document.getElementById('user-info');
+    if (el) {
+        el.textContent = userData;
+    }
 }
 
 function displaySearchResults(query, results) {
     var searchDiv = document.getElementById('search-results');
-    searchDiv.innerHTML = '<h3>Search results for: ' + query + '</h3>';
-    
+    if (!searchDiv) return;
+    searchDiv.innerHTML = '';
+    var header = document.createElement('h3');
+    header.textContent = 'Search results for: ' + query;
+    searchDiv.appendChild(header);
+
     results.forEach(function(result) {
-        searchDiv.innerHTML += '<div class="result-item">' + result.name + '</div>';
+        var item = document.createElement('div');
+        item.className = 'result-item';
+        item.textContent = result.name;
+        searchDiv.appendChild(item);
     });
 }
 
 function updateCourseDescription(courseId, description) {
     var descElement = document.querySelector('[data-course-id="' + courseId + '"] .description');
     if (descElement) {
-        descElement.innerHTML = description;
+        descElement.textContent = description;
     }
+}
+
+function escapeHtml(text) {
+    return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
 }
 
 function formatReviewText(text) {
