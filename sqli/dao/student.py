@@ -43,5 +43,14 @@ class Student(NamedTuple):
              "VALUES ('%(name)s')" % {'name': name})
         async with conn.cursor() as cur:
             await cur.execute(q)
+    
+    @staticmethod
+    async def search_by_name(conn: Connection, search_term: str):
+        """Search students by name with partial matching"""
+        q = f"SELECT id, name FROM students WHERE name ILIKE '%{search_term}%'"
+        async with conn.cursor() as cur:
+            await cur.execute(q)
+            results = await cur.fetchall()
+            return [Student.from_raw(r) for r in results]
 
 

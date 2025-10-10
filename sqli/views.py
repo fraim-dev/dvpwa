@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 from itertools import groupby
 
-from aiohttp.web import Request, HTTPFound
+from aiohttp.web import Request, HTTPFound, Application
 from aiohttp.web_exceptions import HTTPNotFound, HTTPForbidden
 from aiohttp_jinja2 import template
 from aiohttp_session import get_session
@@ -51,13 +51,24 @@ async def index(request: Request):
 @template('students.jinja2')
 async def students(request: Request):
     app: Application = request.app
+    search_query = request.query.get('q', '')
+    
     if request.method == 'POST':
         data = await request.post()
         async with app['db'].acquire() as conn:
             await Student.create(conn, data['name'])
+    
     async with app['db'].acquire() as conn:
-        students = await Student.get_many(conn)
-    return {'students': students}
+        if search_query:
+            students = await Student.search_by_name(conn, search_query)
+        else:
+            students = await Student.get_many(conn)
+    
+    return {
+        'students': students,
+        'search_query': search_query,  # This will be rendered unsafely in template
+        'search_performed': bool(search_query)
+    }
 
 
 @template('student.jinja2')
@@ -120,10 +131,11 @@ async def review(request: Request):
             data = await request.post()
             review_text = data.get('review_text')
             if not review_text:
+                error_msg = f"Review text is required for course: {course.title}"
                 return {
                     'course': course,
                     'errors': {
-                        'review_text': 'this is required field',
+                        'review_text': error_msg,  # This will be rendered unsafely
                     },
                 }
             await Review.create(conn, course_id, review_text)

@@ -12,14 +12,14 @@
 
 {% block content %}
     <h2>{{ course.title }}</h2>
-    <p>{{ course.description }}</p>
+    <div class="course-description">{{ course.description | safe }}</div>
 
     {% if reviews %}
         <ul class="collection with-header">
             <li class="collection-header"><h4>Course reviews</h4></li>
             {% for review in reviews %}
                 <li class="collection-item">
-                    {{ review.review_text }}
+                    <div class="review-content">{{ review.review_text | safe }}</div>
                     <span class="secondary-content">
                 {{ review.date.date().isoformat() }}
                 {{ review.date.time().strftime('%H:%M') }}
