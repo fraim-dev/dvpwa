@@ -11,9 +11,16 @@
 {% endblock %}
 
 {% block content %}
+    {% if search_performed %}
+        <div class="card-panel">
+            <h5>Search Results for: {{ search_query | safe }}</h5>
+            <p>Found {{ students | length }} student(s)</p>
+        </div>
+    {% endif %}
+    
     <div class="collection">
         {% for (id, name) in students %}
-            <a class="collection-item" href="/students/{{ id }}">{{ name }}</a>
+            <a class="collection-item" href="/students/{{ id }}">{{ name | safe }}</a>
         {% endfor %}
     </div>
 {% endblock %}
@@ -36,7 +43,7 @@
                         <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
                         <div class="row">
                             <div class="input-field col s12">
-                                <input id="name" name="name" type="text" class="validate">
+                                <input id="name" name="name" type="text" class="validate" placeholder="Enter student name">
                                 <label for="name">Full name</label>
                             </div>
                         </div>

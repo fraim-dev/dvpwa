@@ -20,13 +20,13 @@
         <form class="col s12" method="POST">
             <div class="card">
                 {% if errors %}
-                    <div class="row">
-                        <div class="toast" style="top: 0;">
-                            {% for fieldname, errors in errors.items %}
-                                <span>{{ fieldname }}: {{ error }}</span>
-                            {% endfor %}
+                        <div class="row">
+                            <div class="toast" style="top: 0;">
+                                {% for fieldname, error in errors.items %}
+                                    <span>{{ fieldname }}: {{ error | safe }}</span>
+                                {% endfor %}
+                            </div>
                         </div>
-                    </div>
                 {% endif %}
                 <div class="card-content">
                     <span class="card-title">Write review to {{ course.title }}</span>

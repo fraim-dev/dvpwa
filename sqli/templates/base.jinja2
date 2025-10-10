@@ -22,7 +22,7 @@
         {% if auth_user %}
             <ul class="right hide-on-med-and-down">
                 <li>
-                    <span style="margin-right: 16px">{{ auth_user.first_name }} {{ auth_user.middle_name or '' }} {{ auth_user.last_name }}</span>
+                    <span style="margin-right: 16px">{{ auth_user.first_name | safe }} {{ auth_user.middle_name or '' | safe }} {{ auth_user.last_name | safe }}</span>
                 </li>
                 <li>
                     <form method="POST" action="/logout/">
@@ -36,7 +36,7 @@
 
             <ul id="nav-mobile" class="side-nav black-text" style="transform: translateX(-100%);">
                 <li>
-                    <span class="">{{ auth_user.first_name }} {{ auth_user.middle_name or '' }} {{ auth_user.last_name }}</span>
+                    <span class="">{{ auth_user.first_name | safe }} {{ auth_user.middle_name or '' | safe }} {{ auth_user.last_name | safe }}</span>
                 </li>
                 <li>
                     <form method="POST" action="/logout/">
@@ -67,6 +67,12 @@
 <script type="text/javascript" defer src="/static/js/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" defer src="/static/js/materialize.min.js"></script>
 <script type="text/javascript" defer src="/static/js/init.js"></script>
+<script type="text/javascript" defer src="/static/js/formatting.js"></script>
+{% if auth_user %}
+<script>
+    window.userData = '{{ auth_user.first_name }} {{ auth_user.last_name }}';
+</script>
+{% endif %}
 
 </body>
 </html>

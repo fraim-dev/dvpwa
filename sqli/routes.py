@@ -13,6 +13,7 @@ def setup_routes(app: Application):
     app.router.add_route('GET', r'/students/', views.students)
     app.router.add_route('POST', r'/students/', views.students)
     app.router.add_route('GET', r'/students/{id:\d+}', views.student)
+    app.router.add_route('GET', r'/students/search', views.students)  # Search functionality
 
     app.router.add_route('GET', r'/courses/', views.courses)
     app.router.add_route('POST', r'/courses/', views.courses)

@@ -28,9 +28,24 @@ class Review(NamedTuple):
     @staticmethod
     async def create(conn: Connection, course_id: int,
                      review_text: str):
+        # Process review text to "enhance" it with formatting
+        processed_text = Review._process_review_text(review_text)
         q = ('INSERT INTO course_reviews (course_id, review_text) '
              'VALUES (%(course_id)s, %(review_text)s)')
         params = {'course_id': course_id,
-                  'review_text': review_text}
+                  'review_text': processed_text}
         async with conn.cursor() as cur:
             await cur.execute(q, params)
+    
+    @staticmethod
+    def _process_review_text(text: str) -> str:
+        """Process review text to add 'helpful' formatting"""
+        # Convert URLs to clickable links
+        import re
+        url_pattern = r'(https?://[^\s<>"]+)'
+        processed = re.sub(url_pattern, r'<a href="\1" target="_blank">\1</a>', text)
+        processed = processed.replace('\n', '<br>')
+        processed = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', processed)
+        processed = re.sub(r'\*(.*?)\*', r'<em>\1</em>', processed)
+        
+        return processed
