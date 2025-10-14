@@ -11,6 +11,15 @@
 {% endblock %}
 
 {% block content %}
+    <div class="row">
+        <div class="col s12">
+            <a href="/students/search" class="btn waves-effect waves-light">
+                <i class="material-icons left">search</i>
+                Advanced Search
+            </a>
+        </div>
+    </div>
+    
     <div class="collection">
         {% for (id, name) in students %}
             <a class="collection-item" href="/students/{{ id }}">{{ name }}</a>
